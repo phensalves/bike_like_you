@@ -6,12 +6,12 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 100.times do
-  user            =   User.create(
-                        email: Faker::Internet.safe_email,
-                        name: Faker::Simpsons.character,
-                        password: "123!@#",
-                        password_confirmation: "123!@#"
-                      )
+  user            = User.create(
+                      email: Faker::Internet.safe_email,
+                      name: Faker::Simpsons.character,
+                      password: "123!@#",
+                      password_confirmation: "123!@#"
+                    )
 
   station         = Station.create(
                       name: Faker::Address.city
