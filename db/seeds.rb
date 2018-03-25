@@ -17,6 +17,15 @@
                       name: Faker::Address.city
                     )
 
+end
+
+953.times do
+  bike            = Bike.create(
+                      brand: Faker::DrWho.character,
+                      model: Faker::DrWho.specie,
+                      station_id: station.id,
+                      broked: false
+                    )
   trip            =  Trip.create(
                       origin_station: station.name,
                       final_station: Faker::Address.city,
@@ -26,18 +35,10 @@
                       bike_id: bike.id,
                       user_id: user.id
                     )
+  trip.complete!
 end
 
-855.times do
-  bike            = Bike.create(
-                      brand: Faker::DrWho.character,
-                      model: Faker::DrWho.specie,
-                      station_id: station.id,
-                      broked: false
-                    )
-end
-
-155.times do
+47.times do
   bike            = Bike.create(
                       brand: Faker::DrWho.character,
                       model: Faker::DrWho.specie,
