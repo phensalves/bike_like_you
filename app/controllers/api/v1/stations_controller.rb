@@ -6,10 +6,5 @@ class Api::V1::StationsController < ApplicationController
 
   def show
   end
-
-  def available_slots
-  end
-
-  def not_avaiable_slots
-  end
+  
 end

@@ -1,4 +1,6 @@
 class Slot < ApplicationRecord
   belongs_to :station
-  belongs_to :bike
+
+  scope :availables, -> { where(available: true).count }
+  scope :unavailables, -> { where(available: false).count }
 end
