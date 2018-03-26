@@ -14,7 +14,7 @@ class TripSerializer < ActiveModel::Serializer
   end
 
   def end_date
-    object.end_date.strftime("%d/%m/%Y às %H:%M")
+    object.end_date.strftime("%d/%m/%Y às %H:%M") if object.completed?
   end
 
 end

@@ -23,17 +23,18 @@ end
   bike            = Bike.create(
                       brand: Faker::DrWho.character,
                       model: Faker::DrWho.specie,
-                      station_id: station.id,
+                      station_id: Station.order("RANDOM()").first.id,
                       broked: false
                     )
+  
   trip            =  Trip.create(
-                      origin_station: station.name,
-                      final_station: Faker::Address.city,
+                      origin_station: Station.order("RANDOM()").first.name,
+                      final_station: Station.order("RANDOM()").first.name,
                       start_date: Faker::Date.between(2.days.ago, Date.today),
                       end_date: Faker::Date.between(2.days.ago, Date.today),
                       distance: Faker::Number.decimal(2),
                       bike_id: bike.id,
-                      user_id: user.id
+                      user_id: User.order("RANDOM()").first.id
                     )
   trip.complete!
 end
@@ -42,7 +43,7 @@ end
   bike            = Bike.create(
                       brand: Faker::DrWho.character,
                       model: Faker::DrWho.specie,
-                      station_id: station.id,
+                      station_id: Station.order("RANDOM()").first.id,
                       broked: true
                     )
 end

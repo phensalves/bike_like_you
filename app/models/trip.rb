@@ -3,7 +3,7 @@ class Trip < ApplicationRecord
   belongs_to :bike
   belongs_to :user
 
-  aasm do
+  aasm :column => :state do
     state :initialized, default: true
     state :completed
 
