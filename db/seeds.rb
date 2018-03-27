@@ -30,8 +30,8 @@ end
   trip            =  Trip.create(
                       origin_station: Station.order("RANDOM()").first.name,
                       final_station: Station.order("RANDOM()").first.name,
-                      start_date: Faker::Date.between(2.days.ago, Date.today),
-                      end_date: Faker::Date.between(2.days.ago, Date.today),
+                      start_date: Faker::Time.between(2.days.ago, Date.today, :all),
+                      end_date: Faker::Time.between(2.days.ago, Date.today, :all),
                       distance: Faker::Number.decimal(2),
                       bike_id: bike.id,
                       user_id: User.order("RANDOM()").first.id
@@ -45,6 +45,14 @@ end
                       model: Faker::DrWho.specie,
                       station_id: Station.order("RANDOM()").first.id,
                       broked: true
+                    )
+  trip            =  Trip.create(
+                      origin_station: Station.order("RANDOM()").first.name,
+                      start_date: Faker::Time.between(2.days.ago, Date.today, :all),
+                      end_date: Faker::Time.between(2.days.ago, Date.today, :all),
+                      distance: Faker::Number.decimal(2),
+                      bike_id: bike.id,
+                      user_id: User.order("RANDOM()").first.id
                     )
 end
 

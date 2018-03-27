@@ -23,6 +23,7 @@ gem 'active_model_serializers', '~> 0.10.0'
 gem 'will_paginate',            '~> 3.1.0'
 gem 'friendly_id',              '~> 5.1.0'
 gem 'aasm'
+gem 'figaro'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
