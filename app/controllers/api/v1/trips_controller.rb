@@ -1,74 +1,71 @@
-class  Api::V1::TripsController < Api::V1::ApiController
-  def start_trip
-    bike = Bike.find(params[:bike_id])
-    bike.broked? ? load_broked_bike_message : Trip.create(user_id: current_user.id, bike_id: bike.id, origin_station: bike.station.name, start_date: DateTime.now)
-    render json: {success: true, message: "Trip started!"}, status: 201
-  end
+module Api
+  module V1
+    class TripsController < Api::V1::ApiController
+      def start_trip
+        bike = Bike.find(params[:bike_id])
+        bike.broked? ? render_json_response(false, 'Can not start trip. Choose another bike.', 422) : init_trip(current_user.id, bike.id)
+      end
 
-  def finish_trip
-    trip          = Trip.where(user_id: current_user.id, bike_id: params[:bike_id], state: 'initialized').first
-    final_station = Station.find(params[:station_id]).name
-    trip.present? ? update_trip_data(trip, final_station) : load_fail_finish_trip_message
-  end
+      def finish_trip
+        trip          = Trip.where(user_id: current_user.id, bike_id: params[:bike_id], state: 'initialized').first
+        final_station = Station.find(params[:station_id]).name if params[:station_id].present?
+        trip.present? ? update_trip_data(trip, final_station) : render_json_response(false, 'Something is wrong!', 422)
+      end
 
-  private
-  def complete_trip trip
-    trip.complete! unless trip.completed?
-  end
+      private
 
-  def load_sucess_finish_trip_message
-    render json: {sucess: true, message: "Trip finished!"}, status: 200
-  end
+      def init_trip(user_id, bike_id)
+        bike = Bike.find(bike_id)
+        Trip.create(user_id: current_user.id, bike_id: bike_id, origin_station: bike.station.name, start_date: Time.now)
+        render_json_response(true, "Trip started!", 201)
+      end
 
-  def load_fail_finish_trip_message
-    render json: {sucess: false, message: "Somenthing is wrong!"}, status: 422
-  end
+      def complete_trip trip
+        trip.complete! unless trip.completed?
+      end
 
-  def load_fail_same_station_finish_trip_message
-    render json: {sucess: false, message: "Unfortunately you cannot finish your trip in this station. Please, choose another station and then deliver this bike. "}, status: 422
-  end
+      def render_json_response(sucess, message, status)
+        render json: {sucess: sucess, message: message}, status: status
+      end
 
-  def load_broked_bike_message
-    render json: {sucess: false, message: "Can't start tripe. This bike is broked, please, choose another bike."}, status: 422
-  end
+      def update_trip_data(trip, final_station)
+        trip.final_station = final_station
+        trip.end_date      = Time.now
+        trip.distance      = calculate_distance
+        unless the_same_station?(trip.origin_station, trip.final_station)
+          trip_object      = prepare_trip_object(trip)
+          NotifyStartTripJob.perform_later trip_object
+          complete_trip(trip)
+          trip.save!
+          render_json_response(true, 'Trip finished!', 200)
+        else
+          render_json_response(false, 'You cannot finish your trip in this station. Please, choose another station.', 422)
+        end
+      end
 
-  def update_trip_data trip, final_station
-    trip.final_station = final_station
-    trip.end_date      = Time.now
-    trip.distance      = calculate_distance
-    unless is_the_same_station?(trip.origin_station, trip.final_station)
-      trip_object      = prepare_trip_object(trip)
-      api_service      = ConsumeApiService.new(trip_object)
-      response         = api_service.send_start_trip_message
-      complete_trip(trip)
-      trip.save!
-      load_sucess_finish_trip_message
-    else
-      load_fail_finish_trip_message
+      def the_same_station?(start_station, end_station)
+        start_station == end_station
+      end
+
+      def calculate_distance
+        Faker::Number.decimal(2)
+      end
+
+      def prepare_trip_object(trip)
+        trip_object = { user_id: trip.user_id,
+                        bike_id: trip.bike_id,
+                        started_at: trip.start_date.strftime('%F %H:%M:%S'),
+                        finished_at: trip.end_date.strftime('%F %H:%M:%S'),
+                        traveled_distance: trip.distance,
+                        origin: {
+                          station_id: Station.where(name: trip.origin_station).first.id
+                        },
+                        destination: {
+                          station_id: Station.where(name: trip.final_station).first.id
+                        }
+                      }
+        trip_object.to_json
+      end
     end
-  end
-
-  def is_the_same_station? start_station, end_station
-    start_station == end_station
-  end
-
-  def calculate_distance
-    Faker::Number.decimal(2)
-  end
-
-  def prepare_trip_object trip
-    trip_object = { user_id: trip.user_id,
-                    bike_id: trip.bike_id,
-                    started_at: trip.start_date.strftime("%F %H:%M:%S"),
-                    finished_at: trip.end_date.strftime("%F %H:%M:%S"),
-                    traveled_distance: trip.distance,
-                    origin: {
-                      station_id: Station.where(name: trip.origin_station).first.id
-                    },
-                    destination: {
-                      station_id: Station.where(name: trip.final_station).first.id
-                    }
-                  }
-    trip_object.to_json
   end
 end

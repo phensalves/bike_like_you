@@ -1,7 +1,7 @@
 class ConsumeApiService
   def initialize(options={})
     @api_key = ENV['SPRINGFIELD_API_KEY']
-    @url     = URI.parse("https://springfield-biketipovc.herokuapp.com/trips")
+    @url     = URI.parse(ENV['API_URL'])
     @trip    = JSON.parse(options)
   end
 
@@ -28,5 +28,4 @@ class ConsumeApiService
     response                  = http.request(request)
     puts response.read_body
   end
-
 end

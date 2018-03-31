@@ -19,7 +19,15 @@
 #  authentication_token   :string(30)
 #
 
-class UserSerializer < ActiveModel::Serializer
-  attributes  :name, 
-              :email
+require 'rails_helper'
+
+RSpec.describe User, type: :model do
+  #FIELDS
+  it { should have_db_column(:name).of_type(:string) }
+  it { should have_db_column(:email).of_type(:string) }
+  it { should have_db_column(:encrypted_password).of_type(:string) }
+  it { should have_db_column(:reset_password_token).of_type(:string) }
+
+  #ASSOCIATIONS
+  it { should have_many(:trips) }      
 end

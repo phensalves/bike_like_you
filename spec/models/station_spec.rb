@@ -8,14 +8,10 @@
 #  updated_at :datetime         not null
 #
 
-class Station < ApplicationRecord
-  has_many :slots, dependent: :delete_all
+require 'rails_helper'
 
-  def available_slots
-    slots.where(available: true).count
-  end
+RSpec.describe Station, type: :model do
+  #FIELDS
+  it { should have_db_column(:name).of_type(:string) }
 
-  def unavailable_slots
-    slots.where(available:false).count
-  end
 end

@@ -10,9 +10,12 @@
 #  bike_id    :integer
 #
 
-class Slot < ApplicationRecord
-  belongs_to :station
+require 'rails_helper'
 
-  scope :availables, -> { where(available: true).count }
-  scope :unavailables, -> { where(available: false).count }
+RSpec.describe Slot, type: :model do
+  #FIELDS
+  it { should have_db_column(:available).of_type(:boolean) }
+
+  #ASSOCIATION
+  it { should belong_to(:station) }
 end
