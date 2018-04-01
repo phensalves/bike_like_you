@@ -2,17 +2,33 @@ require 'rails_helper'
 
 RSpec.describe Api::V1::UsersController, type: :controller do
 
-  let(:email) {User.last.email}
-  let(:token) {User.last.authentication_token}
+  let!(:email) {User.first.email}
+  let!(:token) {User.first.authentication_token}
 
   let!(:auth_headers) {
     { 'X-User-Email' => email, 'X-User-Token' => token }
   }
 
-  let!(:trips) {
-    response = []
-    User.last.trips.map{|trip| response << trip.to_json}
-    response.to_s
+  let(:trips) {
+    user = User.first
+    user_trips = []
+    user.trips.each do |trip|
+      hash  = {
+        id:             trip.id,
+        origin_station: trip.origin_station,
+        final_station:  trip.final_station,
+        start_date:     trip.start_date,
+        end_date:       trip.end_date,
+        distance:       trip.distance,
+        bike: {
+          id:    trip.bike.id,
+          brand: trip.bike.brand,
+          model: trip.bike.model 
+        }
+      }
+      user_trips << hash
+    end
+    user_trips.to_json
   }
 
   before :each do
@@ -28,7 +44,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
     end
 
     it 'expect list trips' do
-      get :my_trips, format: :json
+      get :my_trips
       expect(response.body).to eq(trips)
     end
 

@@ -25,7 +25,7 @@ group :development, :test do
   gem 'pry'
   gem 'pry-nav'
   gem 'rubocop',                    '~> 0.54.0', require: false
-  gem "factory_bot_rails",          '~> 4.0'
+  gem 'factory_bot_rails',          '~> 4.0', require: false
   %w[rspec-core rspec-expectations rspec-mocks rspec-rails rspec-support].each do |lib|
     gem lib, :git => "https://github.com/rspec/#{lib}.git", :branch => 'master'
   end

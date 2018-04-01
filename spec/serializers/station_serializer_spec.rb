@@ -4,7 +4,7 @@ RSpec.describe StationSerializer do
   
   before :each do
     @stations      = FactoryBot.create_list(:station, 10)
-    @seriliazer    = UserSerializer.new(@stations)
+    @seriliazer    = StationSerializer.new(@stations)
     @serialization = ActiveModelSerializers::Adapter.create(@seriliazer)
   end
 

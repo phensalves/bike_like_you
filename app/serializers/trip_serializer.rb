@@ -24,13 +24,4 @@ class TripSerializer < ActiveModel::Serializer
               :distance
 
   belongs_to :bike
-
-  def start_date
-    object.start_date.strftime("%d/%m/%Y às %H:%M") if object.start_date.present?
-  end
-
-  def end_date
-    object.end_date.strftime("%d/%m/%Y às %H:%M") if object.completed?
-  end
-
 end
