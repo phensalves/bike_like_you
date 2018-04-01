@@ -107,4 +107,6 @@ The project use state machine to make sure that trip start and finish correctly.
 
 To finish, go to root path from project and, to run all tests, just type 'rspec'.
 
+Its important run redis-server, because the project uses application job with sidekiq, ok?
+
 Thank you!
