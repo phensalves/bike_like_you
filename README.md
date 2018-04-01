@@ -105,6 +105,8 @@ To finish a trip, make sure the end station is different from origin station, or
 
 The project use state machine to make sure that trip start and finish correctly. Also use async job through application job to make calls to an external api when a trip is finished.
 
+To populate test db, run 'RAILS_ENV=test rake db:setup'
+
 To finish, go to root path from project and, to run all tests, just type 'rspec'.
 
 Its important run redis-server, because the project uses application job with sidekiq, ok?
