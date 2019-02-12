@@ -11,7 +11,7 @@ Next run 'rake db:setup' to setup local db in your environment. The seeds.rb fil
 To login user, use one random email and authentication_token from an user. You would can get him using rails console and pass through header with keys: 'X-User-Email' and 'X-User-Token'. If you don't send them, the API wont permit requests and will show a message.
 
 To list user trips, call using GET method, the endpoint '/api/v1/users/my_trips' making sure that you are sending correct headers. The API will respond with a JSON object with the follow structure, for example:
-
+```
 [
     {
         "id": 589,
@@ -27,8 +27,9 @@ To list user trips, call using GET method, the endpoint '/api/v1/users/my_trips'
         }
     }
 ]
-
+```
 To list all stations, you can call 'api/v1/stations'. The API will respond with a JSON object as follow:
+```
 [
     {
         "station_name": "East Gerry",
@@ -81,28 +82,28 @@ To list all stations, you can call 'api/v1/stations'. The API will respond with 
         "unavailable_slots": 4
     }
 ]
-
+```
 To start a trip, pass a bike_id and your credentials in header as explained above using POST method to '/api/v1/trips/start_trip'. For example: '/api/v1/trips/start_trip?bike_id=722'. If the bike would not broked, the response will be 201 and you will receive a message as:
-
+```
 {
     "sucess": true,
     "message": "Trip started!"
 }
-
+```
 If it would be broked, you will receive a 422 code and message gonna be:
-
+```
 {
     "sucess": false,   
     "message": 'Can not start trip. Choose another bike.'
 }
-
+```
 To finish a trip, make sure the end station is different from origin station, or the trip won't be finished and you will receive the message with a 422 code:
-
+```
 {
     "sucess": false,
     "message": 'You cannot finish your trip in this station. Please, choose another station.'
 }
-
+```
 The project use state machine to make sure that trip start and finish correctly. Also use async job through application job to make calls to an external api when a trip is finished.
 
 To populate test db, run 'RAILS_ENV=test rake db:setup'
